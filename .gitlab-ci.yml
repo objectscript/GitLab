@@ -1,0 +1,109 @@
+stages:
+  - load
+  - test
+  - package
+  - deploy
+
+.env_test: &env_test
+  environment: 
+    name: test
+    url: http://test.eduard.win
+  only: 
+    - master
+  tags: 
+    - test
+    
+.env_preprod: &env_preprod
+  when: manual
+  environment: 
+    name: preprod
+    url: http://preprod.eduard.win
+  only:
+    - preprod
+  tags: 
+    - preprod
+    
+.env_prod: &env_prod
+  environment: 
+    name: prod
+    url: http://prod.eduard.win
+  only:
+    - prod
+  tags: 
+    - prod
+
+.script_load: &script_load
+  stage: load
+  script: csession ensemble "##class(isc.git.GitLab).loadDiff()"
+  artifacts:
+    paths: 
+      - diff.xml
+  
+.script_test: &script_test
+  stage: test
+  script: csession ensemble "##class(isc.git.GitLab).test()"
+  artifacts:
+    paths: 
+      - tests.html
+
+.script_package_client: &script_package_client
+  stage: package
+  script: envsubst < client/index.html > index.html
+  artifacts:
+    paths: 
+      - index.html
+
+.script_package_server: &script_package_server
+  stage: package
+  script: csession ensemble "##class(isc.git.GitLab).package()"
+  artifacts:
+    paths: 
+      - full.xml
+
+.script_deploy_client: &script_deploy_client
+  stage: deploy
+  script: cp -f index.html /var/www/html/index.html    
+  
+load test:
+  <<: *env_test
+  <<: *script_load
+
+test test:
+  <<: *env_test
+  <<: *script_test
+
+package client test:
+  <<: *env_test
+  <<: *script_package_client
+
+package server test:
+  <<: *env_test
+  <<: *script_package_server
+
+deploy test:
+  <<: *env_test
+  <<: *script_deploy_client
+
+load preprod:
+  <<: *env_preprod
+  <<: *script_load
+
+package client preprod:
+  <<: *env_preprod
+  <<: *script_package_client
+
+deploy preprod:
+  <<: *env_preprod
+  <<: *script_deploy_client
+
+load prod:
+  <<: *env_prod
+  <<: *script_load
+  
+package client prod:
+  <<: *env_prod
+  <<: *script_package_client
+
+deploy prod:
+  <<: *env_prod
+  <<: *script_deploy_client
