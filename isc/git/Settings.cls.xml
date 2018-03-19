@@ -6,7 +6,7 @@
 
 <Parameter name="EXT">
 <Description>
-List of extensions relevant to diff</Description>
+List of extensions relevant to code load</Description>
 <Type>List</Type>
 <Expression>$lb("xml", "cls", "csp", "csr", "mac", "int", "bas", "inc", "gbl", "prj", "obj", "pkg", "gof", "dfi", "pivot", "dashboard")</Expression>
 </Parameter>
@@ -19,19 +19,10 @@ List of extensions relevant to diff</Description>
 <Default>^isc.git.Settings</Default>
 </Parameter>
 
-<Parameter name="BASECONFIG">
-<Default>isc.esia.configuration.Abstract</Default>
-</Parameter>
-
-<Parameter name="BASESIGNER">
-<Default>isc.esia.signer.Abstract</Default>
-</Parameter>
-
 <Method name="getSetting">
 <Description>
+Get setting
 Получить настойку
-config - имя класса реализующего интерфейс isc.esia.Configuration.Abstract
-signer - имя класса реализующего интерфейс isc.esia.Signer.Abstract
 write ##class(isc.git.Settings).getSetting("ext")</Description>
 <ClassMethod>1</ClassMethod>
 <CodeMode>expression</CodeMode>
