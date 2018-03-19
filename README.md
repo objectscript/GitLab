@@ -9,7 +9,7 @@ Various GitLab hooks. For more information please read a series of articles on C
 
 # Installation
 
-Load and compile th 
+Load and compile classes. 
 
 ## Development
 
