@@ -1,30 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25">
-<Class name="isc.git.Diff">
-<Super>isc.util.OSUtils</Super>
-<TimeCreated>64700,69295.723984</TimeCreated>
+Class isc.git.Diff Extends isc.util.OSUtils
+{
 
-<Method name="buildDiff">
-<Description>
-Get diff between two points in repository
-repo - repository root directory
-sha1, commitEnd - poins of history in repository
-modified - list of modified files
-added - list of added files 
-deleted - list of deleted files
-
-Internal diff statuses:
-M modified - File has been modified
-C copy-edit - File has been copied and modified //3-arg form
-R rename-edit - File has been renamed and modified //3-arg form
-A added - File has been added
-D deleted - File has been deleted
-U unmerged - File has conflicts after a merge 
-
-do ##class(isc.git.Diff).buildDiff("C:\\temp\GitLab\", "HEAD~10", "HEAD", .modified, .added, .deleted)</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>repo:%String,commitBegin:%String,commitEnd:%String,*modified:%List,*added:%List,*deleted:%List</FormalSpec>
-<Implementation><![CDATA[
+/// Get diff between two points in repository
+/// repo - repository root directory
+/// sha1, commitEnd - poins of history in repository
+/// modified - list of modified files
+/// added - list of added files 
+/// deleted - list of deleted files
+/// 
+/// Internal diff statuses:
+/// M modified - File has been modified
+/// C copy-edit - File has been copied and modified //3-arg form
+/// R rename-edit - File has been renamed and modified //3-arg form
+/// A added - File has been added
+/// D deleted - File has been deleted
+/// U unmerged - File has conflicts after a merge 
+/// 
+/// do ##class(isc.git.Diff).buildDiff("C:\\temp\GitLab\", "HEAD~10", "HEAD", .modified, .added, .deleted)
+ClassMethod buildDiff(repo As %String, commitBegin As %String, commitEnd As %String, Output modified As %List, Output added As %List, Output deleted As %List)
+{
 	#include %occCPTJSgen
 	set (modified, added, deleted) = ""
 	$$$TOE(sc, ..createFile(.tempFile))
@@ -62,19 +56,14 @@ do ##class(isc.git.Diff).buildDiff("C:\\temp\GitLab\", "HEAD~10", "HEAD", .modif
 			throw ##class(%Exception.General).%New("INVALID DIFF LINE: " _ element)
 		}
 	}
-]]></Implementation>
-</Method>
+}
 
-<Method name="isRelevantFile">
-<Description>
-Determine if the file is neede for git diff </Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>dir:%String,file:%String</FormalSpec>
-<ReturnType>%Boolean</ReturnType>
-<Implementation><![CDATA[
+/// Determine if the file is neede for git diff 
+ClassMethod isRelevantFile(dir As %String, file As %String) As %Boolean
+{
 	set ext = $select($length(file, ".")=1:"", 1:$piece(file, ".", *))
 	quit $lf(##class(isc.git.Settings).getSetting("ext"), ext)>0
-]]></Implementation>
-</Method>
-</Class>
-</Export>
+}
+
+}
+

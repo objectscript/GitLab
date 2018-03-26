@@ -1,30 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25">
-<Class name="isc.git.GitLab">
-<TimeCreated>64700,73518.498808</TimeCreated>
+Class isc.git.GitLab
+{
 
-<Method name="getDir">
-<ClassMethod>1</ClassMethod>
-<CodeMode>expression</CodeMode>
-<Implementation><![CDATA[##class(%File).NormalizeDirectory($system.Util.GetEnviron("CI_PROJECT_DIR"))
-]]></Implementation>
-</Method>
+ClassMethod getDir() [ CodeMode = expression ]
+{
+##class(%File).NormalizeDirectory($system.Util.GetEnviron("CI_PROJECT_DIR"))
+}
 
-<Method name="getCommit">
-<Description>
-For CI build - get current commit</Description>
-<ClassMethod>1</ClassMethod>
-<CodeMode>expression</CodeMode>
-<Implementation><![CDATA[$system.Util.GetEnviron("CI_COMMIT_SHA")
-]]></Implementation>
-</Method>
+/// For CI build - get current commit
+ClassMethod getCommit() [ CodeMode = expression ]
+{
+$system.Util.GetEnviron("CI_COMMIT_SHA")
+}
 
-<Method name="load">
-<Description>
-Do a full load
-do ##class(isc.git.GitLab).load()</Description>
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+/// Do a full load
+/// do ##class(isc.git.GitLab).load()
+ClassMethod load()
+{
 	try {
 		set dir = ..getDir()
 		do ..log("Importing dir " _ dir)
@@ -40,15 +31,12 @@ do ##class(isc.git.GitLab).load()</Description>
 		write !,$System.Status.GetErrorText(ex.AsStatus()),!
 		do $system.Process.Terminate(, 1)
 	}
-]]></Implementation>
-</Method>
+}
 
-<Method name="loadDiff">
-<Description>
-Do a diff load
-do ##class(isc.git.GitLab).loadDiff()</Description>
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+/// Do a diff load
+/// do ##class(isc.git.GitLab).loadDiff()
+ClassMethod loadDiff()
+{
 	try {
 		#dim sc,sc1 As %Status = $$$OK
 		set oldCommit = ##class(isc.git.Settings).getSetting("commit")
@@ -98,12 +86,10 @@ do ##class(isc.git.GitLab).loadDiff()</Description>
 		do ..logException(ex)
 		do $system.Process.Terminate(, 1)
 	}
-]]></Implementation>
-</Method>
+}
 
-<Method name="init">
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+ClassMethod init()
+{
 	set init = ##class(isc.git.Settings).getSetting("init")
 	if (init'="") {
 		do ..log("Running init code: " _ init)
@@ -111,14 +97,11 @@ do ##class(isc.git.GitLab).loadDiff()</Description>
 	} else {
 		do ..log("No init code")
 	}
-]]></Implementation>
-</Method>
+}
 
-<Method name="test">
-<Description>
-do ##class(isc.git.GitLab).test()</Description>
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+/// do ##class(isc.git.GitLab).test()
+ClassMethod test()
+{
 	try {
 		set tests = ##class(isc.git.Settings).getSetting("tests")
 		if (tests'="") {
@@ -134,14 +117,11 @@ do ##class(isc.git.GitLab).test()</Description>
 		do ..logException(ex)
 		do $system.Process.Terminate(, 1)
 	}
-]]></Implementation>
-</Method>
+}
 
-<Method name="package">
-<Description>
-do ##class(GitLab.Main).package()</Description>
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+/// do ##class(GitLab.Main).package()
+ClassMethod package()
+{
 	try {
 		set dir = ..getDir()
 		// TODO
@@ -152,12 +132,10 @@ do ##class(GitLab.Main).package()</Description>
 		do ..logException(ex)
 		do $system.Process.Terminate(, 1)
 	}
-]]></Implementation>
-</Method>
+}
 
-<Method name="writeTestHTML">
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+ClassMethod writeTestHTML()
+{
 	set text = ##class(%Dictionary.XDataDefinition).IDKEYOpen($classname(), "html").Data.Read()
 	set text = $replace(text, "!!!", ..getURL())
 	
@@ -166,37 +144,27 @@ do ##class(GitLab.Main).package()</Description>
 	do file.LinkToFile(name)
 	do file.Write(text)
 	quit file.%Save()
-]]></Implementation>
-</Method>
+}
 
-<Method name="getURL">
-<ClassMethod>1</ClassMethod>
-<Implementation><![CDATA[
+ClassMethod getURL()
+{
 	set url = ##class(isc.git.Settings).getSetting("url")
 	set url = url _ $system.CSP.GetDefaultApp("%SYS")
 	set url = url_"/%25UnitTest.Portal.Indices.cls?Index="_ $g(^UnitTest.Result, 1) _ "&$NAMESPACE=" _ $zconvert($namespace,"O","URL")
 	quit url
-]]></Implementation>
-</Method>
+}
 
-<Method name="getExtWildcard">
-<Description>
-Get extensions as wildcard for import</Description>
-<ClassMethod>1</ClassMethod>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Get extensions as wildcard for import
+ClassMethod getExtWildcard() As %String
+{
 	set extList = ##class(isc.git.Settings).getSetting("ext")
 	set ext = "*." _ $lts(##class(isc.git.Settings).getSetting("ext"), ";*.")
 	quit ext
-]]></Implementation>
-</Method>
+}
 
-<Method name="isLastTestOk">
-<Description>
-w ##class(GitLab.Main).isLastTestOk()</Description>
-<ClassMethod>1</ClassMethod>
-<ReturnType>%Boolean</ReturnType>
-<Implementation><![CDATA[
+/// w ##class(GitLab.Main).isLastTestOk()
+ClassMethod isLastTestOk() As %Boolean
+{
 	set in = ##class(%UnitTest.Result.TestInstance).%OpenId(^UnitTest.Result)
 	for i=1:1:in.TestSuites.Count() {
 		#dim suite As %UnitTest.Result.TestSuite
@@ -204,11 +172,10 @@ w ##class(GitLab.Main).isLastTestOk()</Description>
 		return:suite.Status=0 $$$NO
 	}
 	quit $$$YES
-]]></Implementation>
-</Method>
+}
 
-<XData name="html">
-<Data><![CDATA[
+XData html
+{
 <html lang="en-US">
 <head>
 <meta charset="UTF-8"/>
@@ -221,14 +188,10 @@ window.location.href = "!!!"
 If you are not redirected automatically, follow this <a href='!!!'>link to tests</a>.
 </body>
 </html>
-]]></Data>
-</XData>
+}
 
-<Method name="logVar">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>var="",name:%String=""</FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+ClassMethod logVar(var = "", name As %String = "") As %String
+{
 	do ..log("Variable " _ name)
 	zw var
 	/*if $isObject(var) {
@@ -238,28 +201,22 @@ If you are not redirected automatically, follow this <a href='!!!'>link to tests
 	} else {
 		write var
 	}*/
-]]></Implementation>
-</Method>
+}
 
-<Method name="logException">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>ex:%Exception.AbstractException</FormalSpec>
-<Implementation><![CDATA[	do ..logStatus(ex.AsStatus())
-]]></Implementation>
-</Method>
+ClassMethod logException(ex As %Exception.AbstractException)
+{
+	do ..logStatus(ex.AsStatus())
+}
 
-<Method name="logStatus">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>sc:%Status</FormalSpec>
-<Implementation><![CDATA[	do ..log($System.Status.GetErrorText(sc))
-]]></Implementation>
-</Method>
+ClassMethod logStatus(sc As %Status)
+{
+	do ..log($System.Status.GetErrorText(sc))
+}
 
-<Method name="log">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>msg:%String</FormalSpec>
-<Implementation><![CDATA[	write !, $$$FormatText("[%1] %2", $zdatetime($ztimestamp, 3, 1, 3), msg), !
-]]></Implementation>
-</Method>
-</Class>
-</Export>
+ClassMethod log(msg As %String)
+{
+	write !, $$$FormatText("[%1] %2", $zdatetime($ztimestamp, 3, 1, 3), msg), !
+}
+
+}
+
