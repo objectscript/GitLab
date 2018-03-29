@@ -31,13 +31,13 @@ ClassMethod setSetting(name As %String = "", value As %String = "") As %Status
 		set:'$listValid(value) sc = $$$ERROR($$$GeneralError, "Extension list should be in $lb format.")	
 	} elseif name = "commit" {
 		// TO-DO commit validation.  
-	} elseif name = "init" { 
-		set:$length(value, ":")'=2 sc = $$$ERROR($$$GeneralError, "Init should be in a format: 'class:method'")
 	} elseif name = "delete" { 
 		set:$length(value, ":")'=2 sc = $$$ERROR($$$GeneralError, "Delete should be in a format: 'class:method'")
 	} elseif name = "url" {
 		// TO-DO url validation. 
 		// "http://127.0.0.1:57772"
+	} elseif name = "hooks" {
+		// Path relative from the repo root to hooks
 	} else {
 		set sc = $$$ERROR($$$GeneralError, $$$FormatText("Setting '%1' does not exist", name))
 	}
