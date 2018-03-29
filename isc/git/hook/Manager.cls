@@ -23,11 +23,20 @@ ClassMethod execute(directory As %String = "", ByRef hooks As %String = "", meth
 		do:directory'="" ..load(directory, .loadedHooks)
 		merge hooks = loadedHooks
 		
-		/// Execute global hooks
-		do ..executeInternal(.hooks, method, "isc.git.hook.Global")
+		if (method="before") {
 		
-		/// Execute local hooks
-		do ..executeInternal(.hooks, method, "isc.git.hook.Local")
+			/// Execute global hooks
+			do ..executeInternal(.hooks, method, "isc.git.hook.Global")
+			
+			/// Execute local hooks
+			do ..executeInternal(.hooks, method, "isc.git.hook.Local")
+		} elseif (method="after") {
+			/// Execute local hooks
+			do ..executeInternal(.hooks, method, "isc.git.hook.Local")
+			
+			/// Execute global hooks
+			do ..executeInternal(.hooks, method, "isc.git.hook.Global")
+		}
 	} catch ex {
 		set sc = ex.AsStatus()
 	}
