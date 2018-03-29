@@ -23,13 +23,11 @@ ClassMethod execute(directory As %String = "", ByRef hooks As %String = "", meth
 		do:directory'="" ..load(directory, .loadedHooks)
 		merge hooks = loadedHooks
 		
-		do ..log("Executing hooks, method: " _ method)
-		
 		/// Execute global hooks
-		do ..execute(hooks, method, "isc.git.hook.Global")
+		do ..executeInternal(.hooks, method, "isc.git.hook.Global")
 		
 		/// Execute local hooks
-		do ..execute(hooks, method, "isc.git.hook.Local")		
+		do ..executeInternal(.hooks, method, "isc.git.hook.Local")
 	} catch ex {
 		set sc = ex.AsStatus()
 	}
@@ -49,8 +47,10 @@ ClassMethod executeInternal(ByRef hooks As %String = "", method As %String(VALUE
 		continue:class=type
 		continue:((type="isc.git.hook.Local") && (..isDone(class)))
 		
-		$$$TOE(sc, $classmethod(class, type))
-		do:((type="isc.git.hook.Local") && (type="after")) ..add(class)
+		do ..log("Executing hook class: " _ class)
+		
+		$$$TOE(sc, $classmethod(class, method))
+		do:((type="isc.git.hook.Local") && (method="after")) ..add(class)
 	}
 }
 
@@ -59,7 +59,7 @@ ClassMethod load(directory As %String, Output hooks As %String)
 {
 	do ..log("Importing hooks dir " _ directory)
 	set hooks = ""
-	do $system.OBJ.ImportDir(directory, ##class(isc.git.GitLab).getExtWildcard(), "cukb", .errors, 1, .hooks)
+	do $system.OBJ.ImportDir(directory, ##class(isc.git.GitLab).getExtWildcard(), "cukb /displaylog=0", .errors, 1, .hooks)
 	throw:$get(errors,0)'=0 ##class(%Exception.General).%New("Hooks load error")
 }
 
