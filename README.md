@@ -41,3 +41,12 @@ There are two types of hooks available:
 
 Hooks of the same type are executed in collation order. To create a hook extend either or `isc.git.hook.Global` or `isc.git.hook.Local` and implement `onBefore` and/or `onAfter` methods.
 
+## Tips & Tricks
+
+Various tricks for GitLab CI.
+
+### Namespaces
+
+Use `CI_COMMIT_REF_NAME` (resolves to branch) environment variable to use several namespaces on one server. 
+
+I.e. `csession ensemble -U ${CI_COMMIT_REF_NAME} "##class(isc.git.GitLab).loadDiff()"`
