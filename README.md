@@ -41,6 +41,14 @@ There are two types of hooks available:
 
 Hooks of the same type are executed in collation order. To create a hook extend either or `isc.git.hook.Global` or `isc.git.hook.Local` and implement `onBefore` and/or `onAfter` methods.
 
+### Execution order:
+
+1. Global hooks, before.
+2. Local hooks, before.
+3. Code load and compile.
+4. Local hooks, after.
+5. Global hooks, after.
+
 ## Tips & Tricks
 
 Various tricks for GitLab CI.
