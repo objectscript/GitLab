@@ -7,7 +7,7 @@ ClassMethod after() As %Status
 {
 	try {
 		set sc = ..onAfter()
-		do ##class(isc.git.hook.Log).add($classname())
+		do ##class(isc.git.hook.Manager).add($classname())
 	} catch ex {
 		set sc = ex.AsStatus()
 	}
