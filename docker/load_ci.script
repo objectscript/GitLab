@@ -1,0 +1,15 @@
+
+set sc = ##Class(Security.System).Get("SYSTEM",.Properties)
+write:('sc) $System.Status.GetErrorText(sc)
+set AutheEnabled = Properties("AutheEnabled")
+set AutheEnabled = $zb(+AutheEnabled,16,7)
+set Properties("AutheEnabled") = AutheEnabled
+set sc = ##Class(Security.System).Modify("SYSTEM",.Properties)
+write:('sc) $System.Status.GetErrorText(sc)
+zn "USER"
+do ##class(%SYSTEM.OBJ).Load(##class(%File).ManagerDirectory() _ "GitLab.xml","cdk")
+do ##class(isc.git.Settings).setSetting("hooks", "MyApp/Hooks/")
+do ##class(isc.git.Settings).setSetting("tests", "MyApp/Tests/")
+write $system.Process.CurrentDirectory(),!,$system.Process.UserName(),!,##class(isc.git.GitLab).getDir()
+do ##class(isc.git.GitLab).load()
+halt

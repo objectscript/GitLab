@@ -1,0 +1,58 @@
+stages:
+  - build
+  - destroy
+  - run
+  - test
+  - publish
+  
+build image:
+  stage: build
+  tags: 
+    - test
+  script:
+    - cp -r /InterSystems/mount ci
+    - cd ci
+    - echo 'SuperUser' | cat - pwd.txt load_ci.script > temp.txt
+    - mv temp.txt load_ci.script
+    - cd ..
+    - docker build --build-arg CI_PROJECT_DIR=$CI_PROJECT_DIR -t docker.eduard.win/test/docker:$CI_COMMIT_REF_NAME .
+
+destroy old:
+  stage: destroy
+  tags: 
+    - test
+  script:
+    - docker stop iris-$CI_COMMIT_REF_NAME || true
+    - docker rm -f iris-$CI_COMMIT_REF_NAME || true
+
+
+    
+run image:
+  stage: run
+  environment: 
+    name: $CI_COMMIT_REF_NAME
+    url: http://$CI_COMMIT_REF_SLUG.docker.eduard.win/index.html
+  tags: 
+    - test
+  script:
+    - docker run -d
+      --expose 52773
+      --env VIRTUAL_HOST=$CI_COMMIT_REF_SLUG.docker.eduard.win
+      --name iris-$CI_COMMIT_REF_NAME
+      docker.eduard.win/test/docker:$CI_COMMIT_REF_NAME
+      --log $ISC_PACKAGE_INSTALLDIR/mgr/messages.log
+
+test image:
+  stage: test
+  tags: 
+    - test
+  script:
+    - docker exec iris-$CI_COMMIT_REF_NAME irissession iris -U USER "##class(isc.git.GitLab).test()"
+
+publish image:
+  stage: publish
+  tags: 
+    - test
+  script:
+    - docker login docker.eduard.win -u dev -p 123
+    - docker push docker.eduard.win/test/docker:$CI_COMMIT_REF_NAME
