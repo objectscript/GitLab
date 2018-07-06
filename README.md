@@ -9,7 +9,7 @@ Various GitLab hooks. For more information please read a series of articles on C
 - [Part V: Why containers?](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-v-why-containers)
 - [Part VI: Containers infrastructure](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-vi-containers-infrastructure)
 - [Part VII: CD using containers](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-vii-cd-using-containers)
-
+- [Part VIII: CD using ICM](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-viii-cd-using-icm)
 # Installation
 
 Load and compile classes. 
