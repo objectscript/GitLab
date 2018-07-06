@@ -1,12 +1,14 @@
 # GitLab
 
-Various GitLab hooks. For more information please read a series of articles on Continuous Delivery of your InterSystems solution using GitLab:
+Various GitLab hooks. For more information please read a series of articles on Continuous Delivery of your InterSystems solution using GitLab ([index](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-index)):
 
 - [Part I: Git](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-i-git)
 - [Part II: GitLab workflow](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-ii-gitlab-workflow)
 - [Part III: GitLab installation and configuration](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-iii-gitlab-installation-and) 
 - [Part IV: CD configuration](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-iv-cd-configuration)
 - [Part V: Why containers?](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-v-why-containers)
+- [Part VI: Containers infrastructure](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-vi-containers-infrastructure)
+- [Part VII: CD using containers](https://community.intersystems.com/post/continuous-delivery-your-intersystems-solution-using-gitlab-part-vii-cd-using-containers)
 
 # Installation
 
