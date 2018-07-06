@@ -1,0 +1,5 @@
+
+set dir = ##class(%File).NormalizeDirectory($system.Util.GetEnviron("CI_PROJECT_DIR"))
+do ##class(%SYSTEM.OBJ).Load(dir _ "Installer/Global.cls","cdk")
+do ##class(Installer.Global).init()
+halt

@@ -1,0 +1,51 @@
+stages:
+  - build
+  - publish
+  - run
+  - test
+  - deploy
+  
+build image:
+  stage: build
+  tags: 
+    - master
+  script:
+    - cp -r /InterSystems/mount ci
+    - cd ci
+    - echo 'SuperUser' | cat - pwd.txt load_ci_icm.script > temp.txt
+    - mv temp.txt load_ci.script
+    - cd ..
+    - docker build --build-arg CI_PROJECT_DIR -t eduard93/icmdemo:$CI_COMMIT_REF_NAME .
+
+publish image:
+  stage: publish
+  tags: 
+    - master
+  script:
+    - docker login -u eduard93 -p ${DOCKERPASSWORD}
+    - docker push eduard93/icmdemo:$CI_COMMIT_REF_NAME
+
+run image:
+  stage: run
+  environment: 
+    name: $CI_COMMIT_REF_NAME
+  tags: 
+    - master
+  script:
+    - docker exec icm sh -c "cd /icmdata/test && icm upgrade -image eduard93/icmdemo:$CI_COMMIT_REF_NAME"
+
+test image:
+  stage: test
+  tags: 
+    - master
+  script:
+    - docker exec icm sh -c "cd /icmdata/test && icm session -namespace USER -command 'do \$classmethod(\"%UnitTest.Manager\",\"RunTest\",\"MyApp/Tests\",\"/nodelete\")' | tee /dev/stderr | grep 'All PASSED' && exit 0 || exit 1"
+
+deploy image:
+  stage: deploy
+  environment: 
+    name: $CI_COMMIT_REF_NAME
+  tags: 
+    - master
+  script:
+    - docker exec icm sh -c "cd /icmdata/live && icm upgrade -image eduard93/icmdemo:$CI_COMMIT_REF_NAME"

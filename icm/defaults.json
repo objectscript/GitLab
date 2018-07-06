@@ -1,0 +1,22 @@
+{
+    "Provider": "GCP",
+    "Label": "gsdemo2",
+    "Tag": "TEST",
+    "SystemMode": "TEST",
+    "DataVolumeSize": "10",
+    "SSHUser": "sample",
+    "SSHPublicKey": "/icmdata/ssh/insecure.pub",
+    "SSHPrivateKey": "/icmdata/ssh/insecure",
+    "DockerImage": "eduard93/icmdemo:master",
+    "DockerUsername": "",
+    "DockerPassword": "",
+    "TLSKeyDir": "/icmdata/tls",
+    "Credentials": "/icmdata/gcp2.json",
+    "Project": "elebedyu-test",
+    "MachineType": "n1-standard-1",
+    "Region": "us-east1",
+    "Zone": "us-east1-b",
+    "Image": "rhel-cloud/rhel-7-v20170719",
+    "ISCPassword": "SYS",
+    "Mirror": "false"
+}
